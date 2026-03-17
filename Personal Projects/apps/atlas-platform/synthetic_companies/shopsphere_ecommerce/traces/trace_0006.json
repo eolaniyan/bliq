@@ -1,0 +1,7 @@
+{
+  "trace_id": "trace_0006",
+  "services": [
+    "api_gateway",
+    "auth_service"
+  ]
+}

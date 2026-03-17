@@ -1,0 +1,10 @@
+{
+  "service": "admin_portal",
+  "repo": "admin_portal_repo",
+  "calls": [
+    "merchant_service",
+    "reporting_service",
+    "analytics_service"
+  ],
+  "domain": "internal"
+}

@@ -1,0 +1,8 @@
+{
+  "service": "settlement_service",
+  "repo": "settlement_service_repo",
+  "calls": [
+    "reporting_service"
+  ],
+  "domain": "finance"
+}

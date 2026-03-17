@@ -1,0 +1,6 @@
+{
+  "service": "shipping_service",
+  "repo": "shipping_service_repo",
+  "calls": [],
+  "domain": "fulfillment"
+}

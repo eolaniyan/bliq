@@ -1,0 +1,6 @@
+{
+  "service": "inventory_service",
+  "repo": "inventory_service_repo",
+  "calls": [],
+  "domain": "catalog"
+}

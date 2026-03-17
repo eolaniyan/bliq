@@ -1,0 +1,19 @@
+{
+  "company": "NovaPay",
+  "industry": "fintech",
+  "description": "Synthetic fintech architecture for Atlas MVP",
+  "services": [
+    "api_gateway",
+    "auth_service",
+    "merchant_service",
+    "checkout_service",
+    "payment_service",
+    "fraud_service",
+    "ledger_service",
+    "settlement_service",
+    "reporting_service",
+    "notification_service",
+    "analytics_service",
+    "admin_portal"
+  ]
+}

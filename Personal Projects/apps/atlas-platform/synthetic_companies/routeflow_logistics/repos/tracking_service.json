@@ -1,0 +1,9 @@
+{
+  "service": "tracking_service",
+  "repo": "tracking_service_repo",
+  "calls": [
+    "notification_service",
+    "analytics_service"
+  ],
+  "domain": "operations"
+}

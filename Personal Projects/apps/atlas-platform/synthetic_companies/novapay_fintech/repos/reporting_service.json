@@ -1,0 +1,6 @@
+{
+  "service": "reporting_service",
+  "repo": "reporting_service_repo",
+  "calls": [],
+  "domain": "reporting"
+}

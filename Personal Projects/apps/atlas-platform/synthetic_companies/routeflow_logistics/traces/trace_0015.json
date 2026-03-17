@@ -1,0 +1,9 @@
+{
+  "trace_id": "trace_0015",
+  "services": [
+    "api_gateway",
+    "shipment_service",
+    "route_planning_service",
+    "fleet_management_service"
+  ]
+}

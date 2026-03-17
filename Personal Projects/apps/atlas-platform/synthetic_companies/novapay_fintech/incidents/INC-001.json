@@ -1,0 +1,8 @@
+{
+  "incident_id": "INC-001",
+  "service": "fraud_service",
+  "severity": "high",
+  "title": "Fraud scoring latency spike",
+  "impact": "payment authorization latency increased and checkout success rate dropped",
+  "resolution": "scaled fraud workers and cleared pending risk evaluations"
+}

@@ -1,0 +1,18 @@
+{
+  "company": "ShopSphere",
+  "industry": "ecommerce",
+  "services": [
+    "api_gateway",
+    "auth_service",
+    "product_catalog_service",
+    "inventory_service",
+    "cart_service",
+    "checkout_service",
+    "payment_service",
+    "order_service",
+    "shipping_service",
+    "recommendation_service",
+    "notification_service",
+    "analytics_service"
+  ]
+}

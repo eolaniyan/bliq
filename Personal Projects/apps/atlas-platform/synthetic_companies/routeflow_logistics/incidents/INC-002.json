@@ -1,0 +1,8 @@
+{
+  "incident_id": "INC-002",
+  "service": "tracking_service",
+  "severity": "medium",
+  "title": "Tracking event backlog",
+  "impact": "status updates and outbound notifications delayed",
+  "resolution": "restarted event consumers and replayed tracking stream"
+}

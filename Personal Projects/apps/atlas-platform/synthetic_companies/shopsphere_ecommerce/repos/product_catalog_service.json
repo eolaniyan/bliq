@@ -1,0 +1,8 @@
+{
+  "service": "product_catalog_service",
+  "repo": "product_catalog_service_repo",
+  "calls": [
+    "inventory_service"
+  ],
+  "domain": "catalog"
+}

@@ -1,0 +1,18 @@
+{
+  "company": "RouteFlow",
+  "industry": "logistics",
+  "services": [
+    "api_gateway",
+    "auth_service",
+    "shipment_service",
+    "route_planning_service",
+    "warehouse_service",
+    "tracking_service",
+    "fleet_management_service",
+    "billing_service",
+    "invoice_service",
+    "notification_service",
+    "analytics_service",
+    "admin_portal"
+  ]
+}

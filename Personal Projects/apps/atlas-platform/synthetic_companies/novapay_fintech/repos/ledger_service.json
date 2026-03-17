@@ -1,0 +1,8 @@
+{
+  "service": "ledger_service",
+  "repo": "ledger_service_repo",
+  "calls": [
+    "settlement_service"
+  ],
+  "domain": "finance"
+}

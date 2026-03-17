@@ -1,0 +1,6 @@
+{
+  "service": "fleet_management_service",
+  "repo": "fleet_management_service_repo",
+  "calls": [],
+  "domain": "fleet"
+}

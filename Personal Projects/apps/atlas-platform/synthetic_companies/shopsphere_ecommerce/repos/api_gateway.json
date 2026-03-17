@@ -1,0 +1,11 @@
+{
+  "service": "api_gateway",
+  "repo": "api_gateway_repo",
+  "calls": [
+    "auth_service",
+    "product_catalog_service",
+    "cart_service",
+    "checkout_service"
+  ],
+  "domain": "platform"
+}

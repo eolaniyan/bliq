@@ -1,0 +1,8 @@
+{
+  "incident_id": "INC-002",
+  "service": "shipping_service",
+  "severity": "medium",
+  "title": "Carrier integration latency",
+  "impact": "shipment creation delayed and order notifications lagged",
+  "resolution": "failed over carrier adapter and retried queued shipments"
+}

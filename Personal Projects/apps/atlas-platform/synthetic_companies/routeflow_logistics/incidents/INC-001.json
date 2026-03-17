@@ -1,0 +1,8 @@
+{
+  "incident_id": "INC-001",
+  "service": "route_planning_service",
+  "severity": "high",
+  "title": "Route optimization service degradation",
+  "impact": "shipment scheduling slowed and fleet allocation delays increased",
+  "resolution": "scaled route workers and flushed optimization backlog"
+}

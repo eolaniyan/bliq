@@ -1,0 +1,9 @@
+{
+  "service": "route_planning_service",
+  "repo": "route_planning_service_repo",
+  "calls": [
+    "fleet_management_service",
+    "analytics_service"
+  ],
+  "domain": "operations"
+}

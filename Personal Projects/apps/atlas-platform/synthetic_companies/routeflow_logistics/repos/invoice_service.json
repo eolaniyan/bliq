@@ -1,0 +1,6 @@
+{
+  "service": "invoice_service",
+  "repo": "invoice_service_repo",
+  "calls": [],
+  "domain": "finance"
+}

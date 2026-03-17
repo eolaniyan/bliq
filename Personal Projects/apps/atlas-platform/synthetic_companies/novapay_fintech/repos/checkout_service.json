@@ -1,0 +1,9 @@
+{
+  "service": "checkout_service",
+  "repo": "checkout_service_repo",
+  "calls": [
+    "payment_service",
+    "notification_service"
+  ],
+  "domain": "payments"
+}

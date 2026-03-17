@@ -1,0 +1,11 @@
+{
+  "service": "order_service",
+  "repo": "order_service_repo",
+  "calls": [
+    "inventory_service",
+    "shipping_service",
+    "notification_service",
+    "recommendation_service"
+  ],
+  "domain": "orders"
+}

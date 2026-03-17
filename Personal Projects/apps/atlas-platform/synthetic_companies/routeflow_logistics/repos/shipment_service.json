@@ -1,0 +1,10 @@
+{
+  "service": "shipment_service",
+  "repo": "shipment_service_repo",
+  "calls": [
+    "route_planning_service",
+    "tracking_service",
+    "billing_service"
+  ],
+  "domain": "operations"
+}
