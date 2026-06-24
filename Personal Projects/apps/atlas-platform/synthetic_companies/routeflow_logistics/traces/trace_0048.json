@@ -1,0 +1,7 @@
+{
+  "trace_id": "trace_0048",
+  "services": [
+    "admin_portal",
+    "analytics_service"
+  ]
+}

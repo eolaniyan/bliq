@@ -1,0 +1,9 @@
+{
+  "trace_id": "trace_0024",
+  "services": [
+    "api_gateway",
+    "shipment_service",
+    "warehouse_service",
+    "tracking_service"
+  ]
+}

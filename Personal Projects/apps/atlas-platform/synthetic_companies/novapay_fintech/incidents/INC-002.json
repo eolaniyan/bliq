@@ -1,0 +1,8 @@
+{
+  "incident_id": "INC-002",
+  "service": "settlement_service",
+  "severity": "medium",
+  "title": "Settlement batch processing delay",
+  "impact": "merchant payouts and reconciliation reports delayed",
+  "resolution": "restarted settlement workers and replayed batch queue"
+}

@@ -1,0 +1,8 @@
+{
+  "service": "recommendation_service",
+  "repo": "recommendation_service_repo",
+  "calls": [
+    "product_catalog_service"
+  ],
+  "domain": "personalization"
+}

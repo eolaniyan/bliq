@@ -1,0 +1,9 @@
+{
+  "service": "analytics_service",
+  "repo": "analytics_service_repo",
+  "calls": [
+    "order_service",
+    "shipping_service"
+  ],
+  "domain": "data"
+}

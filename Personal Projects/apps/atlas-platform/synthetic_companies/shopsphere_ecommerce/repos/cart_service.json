@@ -1,0 +1,9 @@
+{
+  "service": "cart_service",
+  "repo": "cart_service_repo",
+  "calls": [
+    "product_catalog_service",
+    "inventory_service"
+  ],
+  "domain": "commerce"
+}

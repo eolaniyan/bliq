@@ -1,0 +1,6 @@
+{
+  "service": "notification_service",
+  "repo": "notification_service_repo",
+  "calls": [],
+  "domain": "platform"
+}

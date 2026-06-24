@@ -1,0 +1,8 @@
+{
+  "trace_id": "trace_0030",
+  "services": [
+    "shipment_service",
+    "billing_service",
+    "invoice_service"
+  ]
+}

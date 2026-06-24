@@ -1,0 +1,6 @@
+{
+  "service": "fraud_service",
+  "repo": "fraud_service_repo",
+  "calls": [],
+  "domain": "risk"
+}

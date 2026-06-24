@@ -1,0 +1,6 @@
+{
+  "service": "auth_service",
+  "repo": "auth_service_repo",
+  "calls": [],
+  "domain": "platform"
+}

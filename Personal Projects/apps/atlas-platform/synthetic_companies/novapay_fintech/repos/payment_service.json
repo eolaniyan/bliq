@@ -1,0 +1,9 @@
+{
+  "service": "payment_service",
+  "repo": "payment_service_repo",
+  "calls": [
+    "ledger_service",
+    "reporting_service"
+  ],
+  "domain": "payments"
+}

@@ -1,0 +1,6 @@
+{
+  "service": "analytics_service",
+  "repo": "analytics_service_repo",
+  "calls": [],
+  "domain": "data"
+}

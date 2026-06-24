@@ -1,0 +1,8 @@
+{
+  "incident_id": "INC-001",
+  "service": "inventory_service",
+  "severity": "high",
+  "title": "Inventory service outage",
+  "impact": "checkout confirmation failed for in-stock validation",
+  "resolution": "restarted inventory cluster and restored product stock cache"
+}

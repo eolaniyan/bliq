@@ -1,0 +1,11 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# Node
+atlas_ui/node_modules/
+atlas_ui/dist/

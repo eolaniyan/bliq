@@ -1,0 +1,8 @@
+{
+  "trace_id": "trace_0020",
+  "services": [
+    "api_gateway",
+    "cart_service",
+    "product_catalog_service"
+  ]
+}
