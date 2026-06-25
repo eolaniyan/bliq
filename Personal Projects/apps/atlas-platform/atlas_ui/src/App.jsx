@@ -168,13 +168,13 @@ export default function App() {
       const result = await buildGraph(selectedCompany);
       setBuildResult(result);
 
-      const servicesResponse = await getServices();
+      const servicesResponse = await getServices(selectedCompany);
       const serviceNames = servicesResponse.services || [];
       setServices(serviceNames);
 
       const edgeAccumulator = [];
       for (const serviceName of serviceNames) {
-        const depResponse = await getDependencies(serviceName);
+        const depResponse = await getDependencies(serviceName, selectedCompany);
         const depDetails = depResponse.dependency_details || [];
 
         for (const dep of depDetails) {
@@ -216,10 +216,10 @@ export default function App() {
         setError("");
 
         const [deps, dents, sim, rb, incidents] = await Promise.all([
-          getDependencies(selectedService),
-          getDependents(selectedService),
-          simulateFailure(selectedService),
-          getRunbook(selectedService),
+          getDependencies(selectedService, selectedCompany),
+          getDependents(selectedService, selectedCompany),
+          simulateFailure(selectedService, selectedCompany),
+          getRunbook(selectedService, selectedCompany),
           getServiceIncidents(selectedCompany, selectedService),
         ]);
 

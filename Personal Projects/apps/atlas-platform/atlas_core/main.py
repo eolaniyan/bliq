@@ -2,7 +2,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from atlas_core.config import DATA_ROOT
-from atlas_core.graph.graph_queries import GRAPH_STORE
+from atlas_core.graph.graph_builder import AtlasGraphStore
+from atlas_core.graph.graph_queries import GRAPH_REGISTRY
 from atlas_core.inference.dependency_inference import infer_company_graph
 from atlas_core.inference.drift_detector import detect_drift
 from atlas_core.incidents.service import load_incidents, load_incidents_for_service
@@ -30,6 +31,39 @@ app.add_middleware(
 )
 
 
+def _get_company_dir(company: str):
+    data_root = DATA_ROOT.resolve()
+    company_dir = (DATA_ROOT / company).resolve()
+
+    if data_root != company_dir and data_root not in company_dir.parents:
+        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+
+    if not company_dir.exists() or not company_dir.is_dir():
+        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+
+    return company_dir
+
+
+def _build_graph_store(company: str) -> AtlasGraphStore:
+    company_dir = _get_company_dir(company)
+    services, deps = infer_company_graph(company_dir)
+
+    graph_store = AtlasGraphStore()
+    graph_store.company_name = company
+
+    for service in services:
+        graph_store.add_service(service)
+
+    for dep in deps:
+        graph_store.add_dependency(dep)
+
+    return graph_store
+
+
+def _get_graph_store(company: str | None) -> AtlasGraphStore | None:
+    return GRAPH_REGISTRY.get_store(company)
+
+
 @app.get("/")
 def root() -> dict:
     return {
@@ -49,62 +83,58 @@ def list_companies() -> dict:
 
 @app.post("/graph/build", response_model=BuildGraphResponse)
 def build_graph(company: str) -> BuildGraphResponse:
-    company_dir = DATA_ROOT / company
-
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
-
-    services, deps = infer_company_graph(company_dir)
-
-    GRAPH_STORE.clear()
-    GRAPH_STORE.company_name = company
-
-    for service in services:
-        GRAPH_STORE.add_service(service)
-
-    for dep in deps:
-        GRAPH_STORE.add_dependency(dep)
+    graph_store = _build_graph_store(company)
+    GRAPH_REGISTRY.set_company_store(company, graph_store)
 
     return BuildGraphResponse(
         company=company,
-        services_detected=GRAPH_STORE.node_count(),
-        dependencies_detected=GRAPH_STORE.edge_count(),
+        services_detected=graph_store.node_count(),
+        dependencies_detected=graph_store.edge_count(),
         message="Architecture graph built successfully.",
     )
 
 
 @app.get("/graph/services")
-def get_services() -> dict:
+def get_services(company: str | None = None) -> dict:
+    graph_store = _get_graph_store(company)
+
     return {
-        "company": GRAPH_STORE.company_name,
-        "services": GRAPH_STORE.get_services(),
+        "company": graph_store.company_name if graph_store else company,
+        "services": graph_store.get_services() if graph_store else [],
     }
 
 
 @app.get("/graph/dependencies/{service_name}")
-def get_dependencies(service_name: str) -> dict:
+def get_dependencies(service_name: str, company: str | None = None) -> dict:
+    graph_store = _get_graph_store(company)
+
     return {
+        "company": graph_store.company_name if graph_store else company,
         "service": service_name,
-        "dependencies": GRAPH_STORE.get_dependencies(service_name),
-        "dependency_details": GRAPH_STORE.get_dependency_details(service_name),
+        "dependencies": graph_store.get_dependencies(service_name) if graph_store else [],
+        "dependency_details": graph_store.get_dependency_details(service_name) if graph_store else [],
     }
 
 
 @app.get("/graph/dependents/{service_name}")
-def get_dependents(service_name: str) -> dict:
+def get_dependents(service_name: str, company: str | None = None) -> dict:
+    graph_store = _get_graph_store(company)
+
     return {
+        "company": graph_store.company_name if graph_store else company,
         "service": service_name,
-        "dependents": GRAPH_STORE.get_dependents(service_name),
-        "dependent_details": GRAPH_STORE.get_dependent_details(service_name),
+        "dependents": graph_store.get_dependents(service_name) if graph_store else [],
+        "dependent_details": graph_store.get_dependent_details(service_name) if graph_store else [],
     }
 
 
 @app.get("/graph/simulate/{service_name}", response_model=BlastRadiusResponse)
-def simulate_service_failure(service_name: str) -> BlastRadiusResponse:
-    if service_name not in GRAPH_STORE.graph:
+def simulate_service_failure(service_name: str, company: str | None = None) -> BlastRadiusResponse:
+    graph_store = _get_graph_store(company)
+    if graph_store is None or service_name not in graph_store.graph:
         raise HTTPException(status_code=404, detail=f"Service '{service_name}' not found in graph.")
 
-    direct_dependents, impacted_services = simulate_failure(GRAPH_STORE, service_name)
+    direct_dependents, impacted_services = simulate_failure(graph_store, service_name)
 
     return BlastRadiusResponse(
         failed_service=service_name,
@@ -115,11 +145,12 @@ def simulate_service_failure(service_name: str) -> BlastRadiusResponse:
 
 
 @app.get("/graph/runbook/{service_name}", response_model=RunbookResponse)
-def get_runbook(service_name: str) -> RunbookResponse:
-    if service_name not in GRAPH_STORE.graph:
+def get_runbook(service_name: str, company: str | None = None) -> RunbookResponse:
+    graph_store = _get_graph_store(company)
+    if graph_store is None or service_name not in graph_store.graph:
         raise HTTPException(status_code=404, detail=f"Service '{service_name}' not found in graph.")
 
-    checks = generate_runbook(GRAPH_STORE, service_name)
+    checks = generate_runbook(graph_store, service_name)
     return RunbookResponse(
         service=service_name,
         checks=checks,
@@ -129,10 +160,7 @@ def get_runbook(service_name: str) -> RunbookResponse:
 
 @app.get("/graph/drift")
 def get_graph_drift(company: str) -> dict:
-    company_dir = DATA_ROOT / company
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
-
+    company_dir = _get_company_dir(company)
     drifts = detect_drift(company_dir)
     return {
         "company": company,
@@ -143,10 +171,7 @@ def get_graph_drift(company: str) -> dict:
 
 @app.get("/incidents")
 def get_company_incidents(company: str) -> dict:
-    company_dir = DATA_ROOT / company
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
-
+    company_dir = _get_company_dir(company)
     incidents = load_incidents(company_dir)
     return {
         "company": company,
@@ -157,10 +182,7 @@ def get_company_incidents(company: str) -> dict:
 
 @app.get("/incidents/{service_name}")
 def get_service_incidents(service_name: str, company: str) -> dict:
-    company_dir = DATA_ROOT / company
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
-
+    company_dir = _get_company_dir(company)
     incidents = load_incidents_for_service(company_dir, service_name)
     return {
         "company": company,
