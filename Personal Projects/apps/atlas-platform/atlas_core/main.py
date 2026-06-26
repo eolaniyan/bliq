@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -30,6 +32,19 @@ app.add_middleware(
 )
 
 
+def _resolve_company_dir(company: str) -> Path:
+    if not company or company in {".", ".."} or company != Path(company).name or "\\" in company:
+        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+
+    data_root = DATA_ROOT.resolve()
+    company_dir = (data_root / company).resolve()
+
+    if company_dir.parent != data_root or not company_dir.is_dir():
+        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+
+    return company_dir
+
+
 @app.get("/")
 def root() -> dict:
     return {
@@ -40,7 +55,7 @@ def root() -> dict:
 
 @app.get("/companies")
 def list_companies() -> dict:
-    if not DATA_ROOT.exists():
+    if not DATA_ROOT.is_dir():
         return {"companies": []}
 
     companies = sorted([p.name for p in DATA_ROOT.iterdir() if p.is_dir()])
@@ -49,10 +64,7 @@ def list_companies() -> dict:
 
 @app.post("/graph/build", response_model=BuildGraphResponse)
 def build_graph(company: str) -> BuildGraphResponse:
-    company_dir = DATA_ROOT / company
-
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+    company_dir = _resolve_company_dir(company)
 
     services, deps = infer_company_graph(company_dir)
 
@@ -129,9 +141,7 @@ def get_runbook(service_name: str) -> RunbookResponse:
 
 @app.get("/graph/drift")
 def get_graph_drift(company: str) -> dict:
-    company_dir = DATA_ROOT / company
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+    company_dir = _resolve_company_dir(company)
 
     drifts = detect_drift(company_dir)
     return {
@@ -143,9 +153,7 @@ def get_graph_drift(company: str) -> dict:
 
 @app.get("/incidents")
 def get_company_incidents(company: str) -> dict:
-    company_dir = DATA_ROOT / company
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+    company_dir = _resolve_company_dir(company)
 
     incidents = load_incidents(company_dir)
     return {
@@ -157,9 +165,7 @@ def get_company_incidents(company: str) -> dict:
 
 @app.get("/incidents/{service_name}")
 def get_service_incidents(service_name: str, company: str) -> dict:
-    company_dir = DATA_ROOT / company
-    if not company_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Company '{company}' not found.")
+    company_dir = _resolve_company_dir(company)
 
     incidents = load_incidents_for_service(company_dir, service_name)
     return {
